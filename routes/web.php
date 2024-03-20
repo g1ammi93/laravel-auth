@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Guest\HomeController as GuestHomeController;
 use App\Http\Controllers\Admin\HomeController as AdminHomeController;
+use App\Http\Controllers\Admin\ProjectController as AdminProjectController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProjectController;
 use App\Models\Project;
@@ -22,11 +23,14 @@ Route::get('/', GuestHomeController::class)->name('guest.home');
 
 
 
-Route::prefix('/admin')->name('amind.')->middleware('auth')->group(function () {
+Route::prefix('/admin')->name('admin.')->middleware('auth')->group(function () {
+    // Rotta Admin Home
     Route::get('', AdminHomeController::class)->name('home');
-    Route::resource('project', ProjectController::class);
+    // Rotta Admin Project
+    Route::resource('projects', AdminProjectController::class);
 });
 
+// Rotte profilo
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
