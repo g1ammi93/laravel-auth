@@ -31,11 +31,15 @@
             <a href="{{ route('admin.projects.edit', $project) }}" class="btn btn-warning">
                 <i class="fas fa-pencil me-2"></i>Modifica</a>
 
-            <form action="{{ route('admin.projects.destroy', $project->id) }}" method="POST">
+            <form action="{{ route('admin.projects.destroy', $project->id) }}" method="POST" class="delete-form">
                 @csrf
                 @method('DELETE')
                 <button type="submit" class="btn btn-danger"><i class="fas fa-trash-can me-2"></i>Elimina </button>
             </form>
         </div>
     </footer>
+@endsection
+
+@section('scripts')
+    @vite('resources/js/delete_confirmation.js')
 @endsection
