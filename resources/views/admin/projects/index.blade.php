@@ -16,7 +16,12 @@
                 <th scope="col">Slug</th>
                 <th scope="col">Crato il</th>
                 <th scope="col">Ultima Modifica</th>
-                <th></th>
+                <th>
+                    <div class="d-flex justify-content-end">
+                        <a href="{{ route('admin.projects.create') }}" class="btn btn-sm btn-success">
+                            <i class="fas fa-plus me-2"></i>Nuovo Progetto</a>
+                    </div>
+                </th>
             </tr>
         </thead>
         <tbody>
@@ -25,8 +30,8 @@
                     <th scope="row">{{ $project->id }}</th>
                     <td>{{ $project->title }}</td>
                     <td>{{ $project->slug }}</td>
-                    <td>{{ $project->created_at }}</td>
-                    <td>{{ $project->updated_at }}</td>
+                    <td>{{ $project->getFormattedDate('created_at') }}</td>
+                    <td>{{ $project->getFormattedDate('updated_at') }}</td>
                     <td>
                         <div class="d-flex justify-content-end gap-2">
                             <a href="{{ route('admin.projects.show', $project) }}" class="btn btn-sm btn-primary">
