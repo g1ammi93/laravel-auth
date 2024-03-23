@@ -6,6 +6,7 @@ use App\Models\Project;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Validation\Rule;
 
 class ProjectController extends Controller
 {
@@ -32,6 +33,18 @@ class ProjectController extends Controller
      */
     public function store(Request $request)
     {
+
+        $request->validate([
+            'title' => 'required|string|unique:projects',
+            'description' => 'required|string',
+            'image' => 'nullable|url',
+        ], [
+            'title.required' => 'Il titolo è obbligatorio',
+            'description.required' => 'La descrizione è obbligatoria',
+            'title.unique' => 'Non possono esistere due progetti con lo stesso nome',
+            'image.url' => 'L\'indirizzo inserito non è valido',
+        ]);
+
         $data = $request->all();
 
         $project = new Project();
@@ -66,6 +79,18 @@ class ProjectController extends Controller
      */
     public function update(Request $request, Project $project)
     {
+
+        $request->validate([
+            'title' => ['required', 'string', Rule::unique('projects')->ignore($project->id)],
+            'description' => 'required|string',
+            'image' => 'nullable|url',
+        ], [
+            'title.required' => 'Il titolo è obbligatorio',
+            'description.required' => 'La descrizione è obbligatoria',
+            'title.unique' => 'Non possono esistere due progetti con lo stesso nome',
+            'image.url' => 'L\'indirizzo inserito non è valido',
+        ]);
+
         $data = $request->all();
 
 
