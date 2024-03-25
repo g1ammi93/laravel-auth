@@ -6,6 +6,8 @@ use App\Models\Project;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\Rule;
 
 class ProjectController extends Controller
@@ -37,12 +39,13 @@ class ProjectController extends Controller
         $request->validate([
             'title' => 'required|string|unique:projects',
             'description' => 'required|string',
-            'image' => 'nullable|url',
+            'image' => 'nullable|image|mimes:png,jpg,jpeg',
         ], [
             'title.required' => 'Il titolo è obbligatorio',
             'description.required' => 'La descrizione è obbligatoria',
             'title.unique' => 'Non possono esistere due progetti con lo stesso nome',
-            'image.url' => 'L\'indirizzo inserito non è valido',
+            'image.image' => 'Il file inserito non è un immagine',
+            'image.mimes' => 'Le estensione valide sono: png,jpg e jpeg',
         ]);
 
         $data = $request->all();
@@ -52,6 +55,11 @@ class ProjectController extends Controller
         $project->fill($data);
 
         $project->slug = Str::slug($project->title);
+
+        if (Arr::exists($data, 'image')) {
+            $img_url = Storage::putFile('project_images', $data['image']);
+            $project->image = $img_url;
+        }
 
         $project->save();
 
@@ -83,18 +91,21 @@ class ProjectController extends Controller
         $request->validate([
             'title' => ['required', 'string', Rule::unique('projects')->ignore($project->id)],
             'description' => 'required|string',
-            'image' => 'nullable|url',
+            'image' => 'nullable|image|mimes:png,jpg,jpeg',
         ], [
             'title.required' => 'Il titolo è obbligatorio',
             'description.required' => 'La descrizione è obbligatoria',
             'title.unique' => 'Non possono esistere due progetti con lo stesso nome',
-            'image.url' => 'L\'indirizzo inserito non è valido',
+            'image.image' => 'Il file inserito non è un immagine',
+            'image.mimes' => 'Le estensione valide sono: png,jpg e jpeg',
         ]);
 
         $data = $request->all();
 
 
         $data['slug'] = Str::slug($data['title']);
+
+
 
         $project->update($data);
     }

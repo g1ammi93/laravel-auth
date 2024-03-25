@@ -1,8 +1,8 @@
 @if ($project->exists)
-    <form action="{{ route('admin.projects.update', $project) }}" method="POST">
+    <form action="{{ route('admin.projects.update', $project) }}" method="POST" enctype="mul">
         @method('PUT')
     @else
-        <form action="{{ route('admin.projects.store', $project) }}" method="POST">
+        <form action="{{ route('admin.projects.store', $project) }}" method="POST" enctype="mul">
 @endif
 @csrf
 <div class="row">
@@ -44,7 +44,7 @@
     <div class="col-11">
         <div class="mb-3">
             <label for="image" class="form-label">Image</label>
-            <input type="url"
+            <input type="file"
                 class="form-control @error('image') is-invalid @elseif(old('image', '')) is-valid @enderror"
                 id="image" name="image" placeholder="https://..." value="{{ old('image', $project->image) }}">
         </div>
@@ -53,14 +53,14 @@
             {{ $message }}
         @else
             <div class="form-text">
-                Inserisci un url di un file Immagine
+                Carica un file Immagine
 
             </div>
         @enderror
     </div>
     <div class="col-1">
         <div class="mb-3">
-            <img src="{{ old('image', $project->image ?? 'https://marcolanci.it/boolean/assets/placeholder.png') }}"
+            <img src="{{ old('image', $project->image) ? asset('storage/' . old('image', $project->image)) : 'https://marcolanci.it/boolean/assets/placeholder.png' }}"
                 class="img-fluid" alt="Immagine post" id="preview">
         </div>
     </div>
