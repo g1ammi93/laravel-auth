@@ -45,7 +45,7 @@ class ProjectController extends Controller
             'description.required' => 'La descrizione è obbligatoria',
             'title.unique' => 'Non possono esistere due progetti con lo stesso nome',
             'image.image' => 'Il file inserito non è un immagine',
-            'image.mimes' => 'Le estensione valide sono: png,jpg e jpeg',
+            'image.mimes' => 'Le estensione valide sono: .png, .jpg e .jpeg',
         ]);
 
         $data = $request->all();
@@ -57,7 +57,8 @@ class ProjectController extends Controller
         $project->slug = Str::slug($project->title);
 
         if (Arr::exists($data, 'image')) {
-            $img_url = Storage::putFile('project_images', $data['image']);
+            $extencion = $data['image']->extension();
+            $img_url = Storage::putFile('project_images', $data['image'], "$project->slug.$extencion");
             $project->image = $img_url;
         }
 
@@ -97,7 +98,7 @@ class ProjectController extends Controller
             'description.required' => 'La descrizione è obbligatoria',
             'title.unique' => 'Non possono esistere due progetti con lo stesso nome',
             'image.image' => 'Il file inserito non è un immagine',
-            'image.mimes' => 'Le estensione valide sono: png,jpg e jpeg',
+            'image.mimes' => 'Le estensione valide sono: .png, .jpg e .jpeg',
         ]);
 
         $data = $request->all();
@@ -106,8 +107,15 @@ class ProjectController extends Controller
         $data['slug'] = Str::slug($data['title']);
 
 
+        if (Arr::exists($data, 'image')) {
+            if ($project->image) Storage::delete($project->image);
+            $img_url = Storage::putFile('project_images', $data['image']);
+            $project->image = $img_url;
+        }
 
         $project->update($data);
+
+        return to_route('admin.projects.show')->with('type', 'success')->with('message', 'Post eliminato con successo');
     }
 
     /**
@@ -117,6 +125,8 @@ class ProjectController extends Controller
     {
         $project->delete();
 
-        return to_route('admin.projects.index')->with('type', 'success')->with('message', 'Post eliminato con successo');
+        if ($project->image) Storage::delete($project->image);
+
+        return to_route('admin.projects.index')->with('type', 'success')->with('message', 'Post modificato con successo');
     }
 }

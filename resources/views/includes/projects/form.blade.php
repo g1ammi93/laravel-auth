@@ -1,8 +1,8 @@
 @if ($project->exists)
-    <form action="{{ route('admin.projects.update', $project) }}" method="POST" enctype="mul">
+    <form action="{{ route('admin.projects.update', $project) }}" method="POST" enctype="multipart/form-data">
         @method('PUT')
     @else
-        <form action="{{ route('admin.projects.store', $project) }}" method="POST" enctype="mul">
+        <form action="{{ route('admin.projects.store', $project) }}" method="POST" enctype="multipart/form-data">
 @endif
 @csrf
 <div class="row">
